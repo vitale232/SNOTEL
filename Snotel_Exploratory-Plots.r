@@ -31,6 +31,8 @@ fig1 = ggplot(snotel) +
         axis.text.y=element_text(color='black'))
 print(fig1)
 
+ggsave('./Plots/swe-by-elev.pdf')
+
 fig2 = ggplot(snotel) +
   geom_bar(aes(wyear_factor, swe_meters, fill=site), stat='identity') +
   xlab('Water Year') + 
@@ -40,6 +42,7 @@ fig2 = ggplot(snotel) +
         axis.text.y=element_text(color='black'))
 print(fig2)
 
+ggsave('./Plots/swe-wyear-meters.pdf')
 
 fig3 = ggplot(snotel) + 
   geom_bar(aes(wyear_factor, ppt_inc, fill=site), stat='identity') +
@@ -49,6 +52,8 @@ fig3 = ggplot(snotel) +
   theme(axis.text.x=element_text(color='black', angle=45, vjust=0.8),
         axis.text.y=element_text(color='black'))
 print(fig3)
+ggsave('./Plots/ppt-inc_by_wyear.pdf')
+
 
 
 #### make a map
@@ -57,7 +62,7 @@ map_data = get_map(location=c(lon=mean(snotel$lon),
                    color='color',
                    source='google',
                    maptype='terrain',
-                   zoom=7)
+                   zoom=8)
 
 snotel$site = as.character(snotel$site)
 snotel$site = gsub('_', ' ', snotel$site)
@@ -71,6 +76,8 @@ map = ggmap(map_data) +
   theme(axis.text.x=element_text(color='black'),
         axis.text.y=element_text(color='black'))
 print(map)
+ggsave('./Plots/Map.pdf')
+ggsave('./Plots/Map.png')
 
 max_swe = aggregate(swe ~ wyear + site, 
                     snotel, max, na.rm=TRUE)
@@ -89,7 +96,7 @@ mswePlot = ggplot(max_swe_1989) +
 #   theme(axis.text.x=element_text(angle=45, vjust=0.8))
 print(mswePlot)
 
-
+ggsave('./Plots/annual-max-swe-by-site-and-wyear.pdf')
 
 tmnBoxplots = ggplot(snotel[which((snotel$site == 'Mt Rose' | 
                                   snotel$site == 'Virginia Lakes Ridge') &
@@ -103,7 +110,7 @@ tmnBoxplots = ggplot(snotel[which((snotel$site == 'Mt Rose' |
   theme(axis.text.x=element_text(color='black', angle=45, vjust=0.8),
         axis.text.y=element_text(color='black'))
 print(tmnBoxplots)
-
+ggsave('./Plots/tmn-boxplots.pdf')
 
 cols = c('Mt Rose'='#DC143C',
          'Virginia Lakes Ridge'='#0033bf')
@@ -117,3 +124,4 @@ tmnPlot = ggplot(tmn_df) +
   scale_color_manual(name='Site', values=cols) +
   stat_smooth(aes(date, tmn), method='lm', color='#141414')
 print(tmnPlot)
+ggsave('./Plots/rose-virginia_tmn_mod.pdf')
